@@ -1,49 +1,6 @@
 import { connectDB } from '@/lib/db'
-import Task from '@/models/Task'
+import Project from '@/models/Project'
 import { NextResponse } from 'next/server'
-
-export async function PATCH(req, context) {
-  try {
-    await connectDB()
-
-    const { id } = await context.params
-
-    const body = await req.json()
-
-    const updatedTask =
-      await Task.findByIdAndUpdate(
-        id,
-        {
-          status: body.status,
-        },
-        {
-          new: true,
-        }
-      )
-
-    if (!updatedTask) {
-      return NextResponse.json(
-        {
-          message: 'Task not found',
-        },
-        {
-          status: 404,
-        }
-      )
-    }
-
-    return NextResponse.json(updatedTask)
-  } catch (error) {
-    return NextResponse.json(
-      {
-        message: error.message,
-      },
-      {
-        status: 500,
-      }
-    )
-  }
-}
 
 export async function DELETE(req, context) {
   try {
@@ -51,13 +8,13 @@ export async function DELETE(req, context) {
 
     const { id } = await context.params
 
-    const deletedTask =
-      await Task.findByIdAndDelete(id)
+    const deletedProject =
+      await Project.findByIdAndDelete(id)
 
-    if (!deletedTask) {
+    if (!deletedProject) {
       return NextResponse.json(
         {
-          message: 'Task not found',
+          message: 'Project not found',
         },
         {
           status: 404,
@@ -66,7 +23,7 @@ export async function DELETE(req, context) {
     }
 
     return NextResponse.json({
-      message: 'Task deleted successfully',
+      message: 'Project deleted successfully',
     })
   } catch (error) {
     return NextResponse.json(
