@@ -2,21 +2,35 @@ import { connectDB } from '@/lib/db'
 import Task from '@/models/Task'
 import { NextResponse } from 'next/server'
 
-export async function PATCH(req, { params }) {
+export async function PATCH(req, context) {
   try {
     await connectDB()
 
+    const { id } = await context.params
+
     const body = await req.json()
 
-    const updatedTask = await Task.findByIdAndUpdate(
-      params.id,
-      {
-        status: body.status,
-      },
-      {
-        new: true,
-      }
-    )
+    const updatedTask =
+      await Task.findByIdAndUpdate(
+        id,
+        {
+          status: body.status,
+        },
+        {
+          new: true,
+        }
+      )
+
+    if (!updatedTask) {
+      return NextResponse.json(
+        {
+          message: 'Task not found',
+        },
+        {
+          status: 404,
+        }
+      )
+    }
 
     return NextResponse.json(updatedTask)
   } catch (error) {
@@ -31,11 +45,25 @@ export async function PATCH(req, { params }) {
   }
 }
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, context) {
   try {
     await connectDB()
 
-    await Task.findByIdAndDelete(params.id)
+    const { id } = await context.params
+
+    const deletedTask =
+      await Task.findByIdAndDelete(id)
+
+    if (!deletedTask) {
+      return NextResponse.json(
+        {
+          message: 'Task not found',
+        },
+        {
+          status: 404,
+        }
+      )
+    }
 
     return NextResponse.json({
       message: 'Task deleted successfully',
