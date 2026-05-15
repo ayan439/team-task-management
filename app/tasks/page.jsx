@@ -260,7 +260,7 @@ export default function TasksPage() {
 <td>
   {user?.role === 'member' && (
     <select
-      value={task.status}
+      defaultValue={task.status}
       onChange={async (e) => {
         try {
           await axios.patch(`/api/tasks/${task._id}`, {

@@ -161,25 +161,23 @@ export default function ProjectsPage() {
 
                   {user?.role === 'admin' && (
                     <button
-                      onClick={async (e) => {
-                        e.stopPropagation()
+  onClick={async () => {
+    try {
+      await axios.delete(
+        `/api/projects/${project._id}`
+      )
 
-                        try {
-                          await axios.delete(
-                            `/api/projects/${project._id}`
-                          )
+      setProjects((prevProjects) =>
+        prevProjects.filter(
+          (p) => p._id !== project._id
+        )
+      )
 
-                          fetchProjects()
-
-                          toast.success(
-                            'Project deleted'
-                          )
-                        } catch (error) {
-                          toast.error(
-                            'Delete failed'
-                          )
-                        }
-                      }}
+      toast.success('Project deleted')
+    } catch (error) {
+      toast.error('Delete failed')
+    }
+  }}
                       className='bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl text-sm'
                     >
                       Delete
